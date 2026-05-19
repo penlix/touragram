@@ -1,0 +1,126 @@
+.demo-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+}
+
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.demo-section-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.demo-caption {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+}
+
+/* Colour swatches */
+.demo-swatches {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+}
+
+.demo-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+/* Type ladder */
+.demo-type-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.demo-type-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.demo-type-sample {
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-tight);
+  overflow-wrap: break-word;
+}
+
+.demo-type-sample[data-family="serif"] {
+  font-family: var(--font-serif);
+  letter-spacing: var(--tracking-tighter);
+}
+
+.demo-type-sample[data-family="sans"] {
+  font-family: var(--font-sans);
+}
+
+.demo-type-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+
+/* Font families showcase */
+.demo-families {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-5);
+}
+
+.demo-family-sans,
+.demo-family-serif {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.demo-family-sans {
+  font-family: var(--font-sans);
+}
+
+.demo-family-serif {
+  font-family: var(--font-serif);
+}
+
+.demo-family-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--ink-secondary);
+}
+
+/* Button matrix */
+.demo-button-matrix {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  column-gap: var(--space-5);
+  row-gap: var(--space-4);
+  align-items: center;
+}
+
+/* Disabled row */
+.demo-button-row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.demo-section-block h3 {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-normal);
+}

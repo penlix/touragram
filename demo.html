@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Touragram Design System</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="demo/demo.css">
+</head>
+<body>
+
+<div class="demo-page">
+
+  <header class="demo-section">
+    <h1>Touragram Design System</h1>
+    <p class="demo-caption">Tokens, typography, and the button component.</p>
+  </header>
+
+  <section class="demo-section">
+    <h2>Colours</h2>
+    <div class="demo-swatches">
+      <div class="demo-swatch" style="background-color: var(--color-neutral-0)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-neutral-1)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-neutral-2)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-neutral-3)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-neutral-4)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-accent-default)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-accent-hover)"></div>
+      <div class="demo-swatch" style="background-color: var(--color-danger)"></div>
+    </div>
+    <p class="demo-caption">Neutrals · Accent · Danger</p>
+  </section>
+
+  <section class="demo-section">
+    <h2>Typography</h2>
+
+    <div class="demo-type-ladder">
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="serif" style="font-size: var(--text-5xl)">Touragram</div>
+        <div class="demo-type-label">--text-5xl · 60px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="serif" style="font-size: var(--text-4xl)">Touragram</div>
+        <div class="demo-type-label">--text-4xl · 48px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="serif" style="font-size: var(--text-3xl)">Touragram</div>
+        <div class="demo-type-label">--text-3xl · 36px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-2xl)">Touragram</div>
+        <div class="demo-type-label">--text-2xl · 30px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-xl)">Touragram</div>
+        <div class="demo-type-label">--text-xl · 24px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-lg)">Touragram</div>
+        <div class="demo-type-label">--text-lg · 20px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-md)">Touragram</div>
+        <div class="demo-type-label">--text-md · 18px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-base)">Touragram</div>
+        <div class="demo-type-label">--text-base · 16px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-sm)">Touragram</div>
+        <div class="demo-type-label">--text-sm · 14px</div>
+      </div>
+      <div class="demo-type-row">
+        <div class="demo-type-sample" data-family="sans" style="font-size: var(--text-xs)">Touragram</div>
+        <div class="demo-type-label">--text-xs · 12px</div>
+      </div>
+    </div>
+
+    <div class="demo-families">
+      <div class="demo-family-sans">
+        <div class="demo-family-label">Sans</div>
+        <p>The quick brown fox jumps over the lazy dog.</p>
+      </div>
+      <div class="demo-family-serif">
+        <div class="demo-family-label">Serif</div>
+        <p>The quick brown fox jumps over the lazy dog.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section">
+    <h2>Buttons</h2>
+
+    <div class="demo-button-matrix">
+      <button class="btn" data-variant="primary" data-size="sm">Start</button>
+      <button class="btn" data-variant="primary" data-size="md">Start</button>
+      <button class="btn" data-variant="primary" data-size="lg">Start</button>
+
+      <button class="btn" data-variant="ghost" data-size="sm">Cancel</button>
+      <button class="btn" data-variant="ghost" data-size="md">Cancel</button>
+      <button class="btn" data-variant="ghost" data-size="lg">Cancel</button>
+
+      <button class="btn" data-variant="primary" data-size="sm" data-icon-only aria-label="Capture">
+        <i data-lucide="camera"></i>
+      </button>
+      <button class="btn" data-variant="primary" data-size="md" data-icon-only aria-label="Capture">
+        <i data-lucide="camera"></i>
+      </button>
+      <button class="btn" data-variant="primary" data-size="lg" data-icon-only aria-label="Capture">
+        <i data-lucide="camera"></i>
+      </button>
+
+      <button class="btn" data-variant="ghost" data-size="sm" data-icon-only aria-label="Close">
+        <i data-lucide="x"></i>
+      </button>
+      <button class="btn" data-variant="ghost" data-size="md" data-icon-only aria-label="Close">
+        <i data-lucide="x"></i>
+      </button>
+      <button class="btn" data-variant="ghost" data-size="lg" data-icon-only aria-label="Close">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="demo-section-block">
+      <h3>Disabled</h3>
+      <div class="demo-button-row">
+        <button class="btn" data-variant="primary" data-size="md" disabled>Saving</button>
+        <button class="btn" data-variant="ghost" data-size="md" disabled>Saving</button>
+      </div>
+      <p class="demo-caption">Hover, active, and focus states show on interaction. Use DevTools (:hov panel) to force them.</p>
+    </div>
+  </section>
+
+  <footer class="demo-section">
+    <p class="demo-caption">Design system v0.1</p>
+  </footer>
+
+</div>
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+</body>
+</html>

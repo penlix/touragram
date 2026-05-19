@@ -1,0 +1,21 @@
+:root {
+  /* Surface */
+  --surface-base: var(--color-neutral-0);
+  --surface-raised: var(--color-neutral-1);
+
+  /* Ink */
+  --ink-primary: var(--color-neutral-4);
+  --ink-secondary: var(--color-neutral-3);
+  --ink-inverse: var(--color-neutral-0);
+
+  /* Border */
+  --border-default: var(--color-neutral-2);
+
+  /* Accent */
+  --accent-default: var(--color-accent-default);
+  --accent-hover: var(--color-accent-hover);
+  --accent-ink: var(--ink-inverse);
+
+  /* Feedback */
+  --feedback-danger: var(--color-danger);
+}
