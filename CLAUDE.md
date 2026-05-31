@@ -23,4 +23,6 @@ Plain HTML, CSS, JavaScript. No frameworks, no build tools. The point is to unde
 - Use clear, imperative commit messages. "Add header", "Fix button alignment". Not "Added the header".
 - Commit after each meaningful change rather than batching.
 - Do not include Co-Authored-By trailers. Commit as me only.
-- Ask before each `git add` and `git commit`. Show what will be staged or committed first, and get a separate approval for each step. Read-only inspection (`git status`, `git diff`, `git log`) does not need approval.
+- Show the proposed commit message before running anything. That's the moment to push back. After approval, `git add` and `git commit` may be run together as one step.
+- `git push` always needs its own separate approval. It is effectively irreversible.
+- Read-only inspection (`git status`, `git diff`, `git log`) does not need approval.
