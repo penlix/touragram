@@ -58,48 +58,10 @@
   overflow-wrap: break-word;
 }
 
-.demo-type-sample[data-family="serif"] {
-  font-family: var(--font-serif);
-  letter-spacing: var(--tracking-tighter);
-}
-
-.demo-type-sample[data-family="sans"] {
-  font-family: var(--font-sans);
-}
-
 .demo-type-label {
-  font-family: var(--font-sans);
   font-size: var(--text-xs);
   color: var(--ink-secondary);
   white-space: nowrap;
-}
-
-/* Font families showcase */
-.demo-families {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--space-5);
-}
-
-.demo-family-sans,
-.demo-family-serif {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.demo-family-sans {
-  font-family: var(--font-sans);
-}
-
-.demo-family-serif {
-  font-family: var(--font-serif);
-}
-
-.demo-family-label {
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-  color: var(--ink-secondary);
 }
 
 /* Button matrix */

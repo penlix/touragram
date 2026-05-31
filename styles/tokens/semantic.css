@@ -18,4 +18,6 @@
 
   /* Feedback */
   --feedback-danger: var(--color-danger);
+  --feedback-success: var(--color-success-default);
+  --feedback-success-hover: var(--color-success-hover);
 }

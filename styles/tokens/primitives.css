@@ -1,17 +1,19 @@
 :root {
   /* Colour: neutrals (dark to light) */
-  --color-neutral-0: #0F1218;
-  --color-neutral-1: #1A1E29;
-  --color-neutral-2: #6A6D80;
+  --color-neutral-0: #10141C;
+  --color-neutral-1: #465775;
+  --color-neutral-2: #5B6C5D;
   --color-neutral-3: #B5B6C2;
   --color-neutral-4: #E8E4DC;
 
-  /* Colour: accent */
-  --color-accent-default: #B76D68;
-  --color-accent-hover: #C7807A;
+  /* Colour: accent (Coral) */
+  --color-accent-default: #EF6F6C;
+  --color-accent-hover: #F38986;
 
   /* Colour: feedback */
-  --color-danger: #D14E4E;
+  --color-danger: #B83A3A;
+  --color-success-default: #59C9A5;
+  --color-success-hover: #56E39F;
 
   /* Space */
   --space-0: 0;
@@ -27,7 +29,6 @@
 
   /* Type: family */
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
   /* Type: size */
   --text-xs: 0.75rem;

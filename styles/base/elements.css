@@ -7,17 +7,15 @@ body {
 }
 
 h1 {
-  font-family: var(--font-serif);
   font-size: var(--text-4xl);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-bold);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tighter);
 }
 
 h2 {
-  font-family: var(--font-serif);
   font-size: var(--text-3xl);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tighter);
 }

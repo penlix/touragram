@@ -29,15 +29,20 @@
 }
 
 .btn[data-size="lg"] {
-  height: 3rem;
-  padding-inline: var(--space-5);
-  font-size: var(--text-md);
+  height: 4rem;
+  padding-inline: var(--space-6);
+  font-size: var(--text-lg);
 }
 
 .btn[data-icon-only] {
   padding-inline: 0;
   aspect-ratio: 1;
   border-radius: var(--radius-full);
+}
+
+.btn[data-icon-only] svg {
+  width: 24px;
+  height: 24px;
 }
 
 .btn[data-variant="primary"] {
