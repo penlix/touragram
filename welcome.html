@@ -7,16 +7,9 @@
   <link rel="stylesheet" href="styles/main.css">
   <style>
     body {
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-    }
-
-    .welcome-spacer {
-      flex: 1;
     }
 
     .welcome-wordmark {
@@ -25,25 +18,22 @@
       padding-inline: var(--space-5);
     }
 
-    .welcome-actions {
-      flex: 1;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: calc(var(--space-7) + env(safe-area-inset-bottom));
+    .welcome-go {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-bold);
     }
   </style>
 </head>
-<body>
+<body class="screen">
 
-  <div class="welcome-spacer"></div>
+  <div class="screen-center">
+    <h1 class="welcome-wordmark">Touragram</h1>
+  </div>
 
-  <h1 class="welcome-wordmark">Touragram</h1>
-
-  <div class="welcome-actions">
-    <button class="btn" data-variant="primary" data-size="lg" data-icon-only aria-label="Begin tour">
-      <i data-lucide="camera"></i>
-    </button>
+  <div class="bottom-actions">
+    <a class="btn welcome-go" href="capture.html" data-variant="primary" data-size="lg" data-shape="circle" data-slot="primary">
+      GO
+    </a>
   </div>
 
   <script>

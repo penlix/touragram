@@ -6,6 +6,7 @@
   font-family: var(--font-sans);
   font-weight: var(--font-weight-medium);
   line-height: 1;
+  text-decoration: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition:
@@ -34,13 +35,13 @@
   font-size: var(--text-lg);
 }
 
-.btn[data-icon-only] {
+.btn[data-shape="circle"] {
   padding-inline: 0;
   aspect-ratio: 1;
   border-radius: var(--radius-full);
 }
 
-.btn[data-icon-only] svg {
+.btn svg {
   width: 24px;
   height: 24px;
 }
