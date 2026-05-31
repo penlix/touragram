@@ -14,7 +14,7 @@
   /* Accent */
   --accent-default: var(--color-accent-default);
   --accent-hover: var(--color-accent-hover);
-  --accent-ink: var(--ink-inverse);
+  --accent-ink: var(--ink-primary);
 
   /* Feedback */
   --feedback-danger: var(--color-danger);
