@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Touragram — Find</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .find-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(15, 18, 24, 0.55) 0%,
+        rgba(15, 18, 24, 0.70) 50%,
+        rgba(15, 18, 24, 0.85) 100%
+      );
+      pointer-events: none;
+    }
+
+    .find-loader {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      transition: opacity 300ms var(--ease-out);
+    }
+
+    .find-loader-label {
+      font-size: var(--text-sm);
+      color: var(--ink-primary);
+      opacity: 0.65;
+    }
+
+    .find-loader-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: var(--ink-primary);
+      animation: find-loader-pulse 1.3s ease-in-out infinite;
+    }
+
+    .find-loader.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes find-loader-pulse {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 1.0; }
+    }
+
+    .find-carousel {
+      display: flex;
+      gap: var(--space-3);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-inline: var(--space-5);
+      padding-bottom: var(--space-5);
+      scrollbar-width: none;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 300ms var(--ease-out);
+    }
+
+    .find-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .find-carousel.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .find-carousel .card {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      width: 240px;
+    }
+  </style>
+</head>
+<body class="screen">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="liquid-glass-distortion" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.012" numOctaves="2" seed="92" result="noise" />
+        <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+        <feDisplacementMap in="SourceGraphic" in2="blurred" scale="7" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="find-overlay"></div>
+
+  <div class="screen-center">
+    <div class="find-loader">
+      <div class="find-loader-dot"></div>
+      <span class="find-loader-label">Loading</span>
+    </div>
+  </div>
+
+  <div class="screen-spacer"></div>
+
+  <div class="find-carousel"></div>
+
+  <div class="bottom-actions">
+    <a class="btn" data-variant="ghost" data-size="md" data-shape="circle" data-slot="left" href="welcome.html" aria-label="Close">
+      <i data-lucide="x"></i>
+    </a>
+    <a class="btn" data-variant="primary" data-size="lg" data-shape="circle" data-slot="primary" href="capture.html" aria-label="Snap again">
+      <i data-lucide="camera"></i>
+    </a>
+  </div>
+
+  <script>
+    const landmarks = [
+      { name: 'Brandenburg Gate', imagePlaceholder: 'linear-gradient(135deg, #B5A18C, #6B5340)' },
+      { name: 'Reichstag',        imagePlaceholder: 'linear-gradient(135deg, #8A9DA3, #4A5860)' },
+      { name: 'TV Tower',         imagePlaceholder: 'linear-gradient(135deg, #A87C5C, #5A3F2A)' }
+    ];
+
+    const carousel = document.querySelector('.find-carousel');
+
+    landmarks.forEach(landmark => {
+      const card = document.createElement('a');
+      card.className = 'card';
+      card.href = '#';
+      card.innerHTML = `
+        <div class="card-media" style="background: ${landmark.imagePlaceholder}"></div>
+        <div class="card-title">${landmark.name}</div>
+      `;
+      carousel.appendChild(card);
+    });
+
+    setTimeout(() => {
+      document.querySelector('.find-loader').classList.add('is-hidden');
+      carousel.classList.add('is-visible');
+    }, 2000);
+  </script>
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+
+</body>
+</html>
