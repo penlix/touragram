@@ -184,7 +184,6 @@
     const sheetBackdrop = document.querySelector('.sheet-backdrop');
     const sheetHandleBar = document.querySelector('.sheet-handle-bar');
     const sheetClose = document.querySelector('[data-state-button="sheet-close"]');
-    const captureBottomActions = document.querySelector('.bottom-actions:not(.sheet-actions)');
 
     let currentState = 'live';
     let sheetOpen = false;
@@ -280,7 +279,6 @@
       sheetOpen = true;
       sheet.hidden = false;
       sheetBackdrop.hidden = false;
-      captureBottomActions.hidden = true;
       document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => {
         sheet.classList.add('is-open');
@@ -297,7 +295,6 @@
         if (!sheetOpen) {
           sheet.hidden = true;
           sheetBackdrop.hidden = true;
-          captureBottomActions.hidden = false;
           document.body.style.overflow = '';
         }
       }, 250);
