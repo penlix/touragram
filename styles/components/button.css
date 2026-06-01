@@ -10,7 +10,7 @@
   font-weight: var(--font-weight-medium);
   line-height: 1;
   text-decoration: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition:
     background-color var(--duration-base) var(--ease-out),
