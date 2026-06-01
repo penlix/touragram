@@ -127,6 +127,40 @@
     </button>
   </div>
 
+  <div class="sheet-backdrop" hidden></div>
+
+  <div class="sheet" hidden>
+    <div class="sheet-handle-bar">
+      <div class="sheet-handle"></div>
+    </div>
+    <div class="sheet-content">
+      <div class="carousel sheet-gallery">
+        <div class="sheet-photo" style="background: linear-gradient(135deg, var(--color-accent-default), var(--color-neutral-1));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(135deg, var(--color-neutral-2), var(--color-accent-default));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(45deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(135deg, var(--color-accent-default), var(--color-neutral-2));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(180deg, var(--color-neutral-2), var(--color-neutral-1));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(45deg, var(--color-neutral-1), var(--color-accent-default));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(90deg, var(--color-neutral-2), var(--color-accent-default));"></div>
+        <div class="sheet-photo" style="background: linear-gradient(180deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
+      </div>
+      <div class="sheet-text">
+        <h1 class="sheet-title">Brandenburg Gate</h1>
+        <p>Built between 1788 and 1791, the Brandenburg Gate was commissioned by Frederick William II of Prussia and designed by Carl Gotthard Langhans, who modeled it on the Propylaea of the Athenian Acropolis. Six Doric columns frame five passages beneath a heavy attic crowned by the Quadriga — a copper statue of the goddess Victoria driving a four-horse chariot.</p>
+        <p>The gate has stood at the center of Berlin's most charged moments. Napoleon's troops marched through it. The Quadriga was stolen, returned, and stolen again across two centuries. After 1961 the structure sat marooned in the no-man's-land between East and West Berlin, visible from both sides but reachable from neither. When the Wall fell in 1989, the gate became the symbolic image of reunification.</p>
+        <p>Today it anchors Pariser Platz, a pedestrian square closed to traffic and surrounded by the U.S. Embassy, the Hotel Adlon, and the Akademie der Künste. The sandstone catches the last of the light at dusk, making it one of the city's most photographed spots. Allow fifteen minutes for the gate itself; longer if you continue east toward the Reichstag or south through Tiergarten.</p>
+      </div>
+    </div>
+    <div class="bottom-actions sheet-actions">
+      <button type="button" class="btn" data-variant="primary" data-size="lg" data-shape="circle" data-slot="primary" aria-label="Close" data-state-button="sheet-close">
+        <i data-lucide="x"></i>
+      </button>
+      <button type="button" class="btn" data-variant="ghost" data-size="md" data-shape="circle" data-slot="right" aria-label="Share" data-state-button="sheet-share">
+        <i data-lucide="share"></i>
+      </button>
+    </div>
+  </div>
+
   <script>
     const FAKE_RESULTS = true;
 
@@ -146,8 +180,17 @@
     const ghostClose = document.querySelector('[data-state-button="ghost-close"]');
     const camera = document.querySelector('[data-state-button="camera"]');
     const primaryClose = document.querySelector('[data-state-button="primary-close"]');
+    const sheet = document.querySelector('.sheet');
+    const sheetBackdrop = document.querySelector('.sheet-backdrop');
+    const sheetHandleBar = document.querySelector('.sheet-handle-bar');
+    const sheetClose = document.querySelector('[data-state-button="sheet-close"]');
+    const captureBottomActions = document.querySelector('.bottom-actions:not(.sheet-actions)');
 
     let currentState = 'live';
+    let sheetOpen = false;
+    let dragStartY = 0;
+    let dragCurrentY = 0;
+    let isDragging = false;
 
     async function startCamera() {
       try {
@@ -222,14 +265,69 @@
     }
 
     landmarks.forEach(landmark => {
-      const card = document.createElement('a');
+      const card = document.createElement('button');
+      card.type = 'button';
       card.className = 'card';
-      card.href = 'results.html';
       card.innerHTML = `
         <div class="card-media" style="background: ${landmark.imagePlaceholder}"></div>
         <div class="card-title">${landmark.name}</div>
       `;
+      card.addEventListener('click', () => openSheet(landmark));
       carousel.appendChild(card);
+    });
+
+    function openSheet(landmark) {
+      sheetOpen = true;
+      sheet.hidden = false;
+      sheetBackdrop.hidden = false;
+      captureBottomActions.hidden = true;
+      requestAnimationFrame(() => {
+        sheet.classList.add('is-open');
+        sheetBackdrop.classList.add('is-open');
+      });
+    }
+
+    function closeSheet() {
+      sheetOpen = false;
+      sheet.classList.remove('is-open');
+      sheetBackdrop.classList.remove('is-open');
+      sheet.style.transform = '';
+      setTimeout(() => {
+        if (!sheetOpen) {
+          sheet.hidden = true;
+          sheetBackdrop.hidden = true;
+          captureBottomActions.hidden = false;
+        }
+      }, 250);
+    }
+
+    sheetClose.addEventListener('click', closeSheet);
+
+    sheetHandleBar.addEventListener('touchstart', (e) => {
+      dragStartY = e.touches[0].clientY;
+      dragCurrentY = dragStartY;
+      isDragging = true;
+      sheet.style.transition = 'none';
+    });
+
+    sheetHandleBar.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      dragCurrentY = e.touches[0].clientY;
+      const dragDistance = Math.min(Math.max(0, dragCurrentY - dragStartY), sheet.offsetHeight);
+      sheet.style.transform = `translateY(${dragDistance}px)`;
+    });
+
+    sheetHandleBar.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      sheet.style.transition = '';
+      const dragDistance = dragCurrentY - dragStartY;
+      const dismissThreshold = sheet.offsetHeight * 0.15;
+      if (dragDistance > dismissThreshold) {
+        closeSheet();
+      } else {
+        sheet.style.transform = '';
+      }
     });
 
     camera.addEventListener('click', () => {
