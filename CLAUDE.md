@@ -10,6 +10,15 @@ Beginner at modern web development. Background is HTML/CSS, Webflow, and ActionS
 
 Plain HTML, CSS, JavaScript. No frameworks, no build tools. The point is to understand fundamentals before adding tools.
 
+## Page conventions
+
+When creating a new HTML page in this project, include these site-wide elements at the bottom of `<body>`:
+
+1. The Vercel Analytics script: `<script defer src="/_vercel/insights/script.js"></script>`
+2. Any other site-wide scripts added in the future.
+
+This is the current solution for shared snippets in a plain-HTML-no-build-step project. As the project grows, we may migrate to a templating tool to handle this automatically.
+
 ## How to work with me
 
 - Explain code when you write it. Walk through what each piece does in terms a beginner with an HTML/CSS background can follow.
