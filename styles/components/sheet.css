@@ -67,12 +67,12 @@
 
 .sheet-gallery {
   padding-block: var(--space-5);
-  min-height: calc(240px + 2 * var(--space-5));
+  min-height: calc(120px + 2 * var(--space-5));
 }
 
 .sheet-photo {
-  width: 160px;
-  height: 240px;
+  width: 80px;
+  height: 120px;
   border-radius: var(--radius-lg);
 }
 
@@ -82,7 +82,7 @@
 }
 
 .sheet-title {
-  font-size: var(--text-4xl);
+  font-size: var(--text-2xl);
   margin-bottom: var(--space-5);
 }
 
