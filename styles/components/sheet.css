@@ -57,6 +57,14 @@
   overflow-y: auto;
 }
 
+.sheet-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: none;
+}
+
 .sheet-gallery {
   padding-block: var(--space-5);
   min-height: calc(240px + 2 * var(--space-5));
