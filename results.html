@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Touragram — Brandenburg Gate</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .results-gallery {
+      min-height: calc(240px + var(--space-5) + var(--space-5) + env(safe-area-inset-top));
+      padding-top: calc(var(--space-5) + env(safe-area-inset-top));
+      padding-bottom: var(--space-5);
+    }
+
+    .results-photo {
+      width: 160px;
+      height: 240px;
+      border-radius: var(--radius-lg);
+    }
+
+    .results-content {
+      padding: var(--space-5);
+      padding-bottom: calc(160px + env(safe-area-inset-bottom));
+    }
+
+    .results-title {
+      font-size: var(--text-4xl);
+      margin-bottom: var(--space-5);
+    }
+
+    .results-content p {
+      font-size: var(--text-base);
+      line-height: var(--leading-relaxed);
+      color: var(--ink-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .bottom-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  </style>
+</head>
+<body class="screen">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="liquid-glass-distortion" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.012" numOctaves="2" seed="92" result="noise" />
+        <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+        <feDisplacementMap in="SourceGraphic" in2="blurred" scale="7" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="carousel results-gallery">
+    <div class="results-photo" style="background: linear-gradient(135deg, var(--color-accent-default), var(--color-neutral-1));"></div>
+    <div class="results-photo" style="background: linear-gradient(135deg, var(--color-neutral-2), var(--color-accent-default));"></div>
+    <div class="results-photo" style="background: linear-gradient(45deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
+    <div class="results-photo" style="background: linear-gradient(135deg, var(--color-accent-default), var(--color-neutral-2));"></div>
+    <div class="results-photo" style="background: linear-gradient(180deg, var(--color-neutral-2), var(--color-neutral-1));"></div>
+    <div class="results-photo" style="background: linear-gradient(45deg, var(--color-neutral-1), var(--color-accent-default));"></div>
+    <div class="results-photo" style="background: linear-gradient(90deg, var(--color-neutral-2), var(--color-accent-default));"></div>
+    <div class="results-photo" style="background: linear-gradient(180deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
+  </div>
+
+  <div class="results-content">
+    <h1 class="results-title">Brandenburg Gate</h1>
+    <p>Built between 1788 and 1791, the Brandenburg Gate was commissioned by Frederick William II of Prussia and designed by Carl Gotthard Langhans, who modeled it on the Propylaea of the Athenian Acropolis. Six Doric columns frame five passages beneath a heavy attic crowned by the Quadriga — a copper statue of the goddess Victoria driving a four-horse chariot.</p>
+    <p>The gate has stood at the center of Berlin's most charged moments. Napoleon's troops marched through it. The Quadriga was stolen, returned, and stolen again across two centuries. After 1961 the structure sat marooned in the no-man's-land between East and West Berlin, visible from both sides but reachable from neither. When the Wall fell in 1989, the gate became the symbolic image of reunification.</p>
+    <p>Today it anchors Pariser Platz, a pedestrian square closed to traffic and surrounded by the U.S. Embassy, the Hotel Adlon, and the Akademie der Künste. The sandstone catches the last of the light at dusk, making it one of the city's most photographed spots. Allow fifteen minutes for the gate itself; longer if you continue east toward the Reichstag or south through Tiergarten.</p>
+  </div>
+
+  <div class="bottom-actions">
+    <a class="btn" data-variant="primary" data-size="lg" data-shape="circle" data-slot="primary" href="find.html" aria-label="Close">
+      <i data-lucide="x"></i>
+    </a>
+    <button class="btn" data-variant="ghost" data-size="md" data-shape="circle" data-slot="right" aria-label="Share">
+      <i data-lucide="share"></i>
+    </button>
+  </div>
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+
+</body>
+</html>

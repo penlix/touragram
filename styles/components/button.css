@@ -117,9 +117,14 @@
   outline-offset: 2px;
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn.is-disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.btn.is-disabled {
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {

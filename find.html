@@ -50,20 +50,9 @@
     }
 
     .find-carousel {
-      display: flex;
-      gap: var(--space-3);
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-inline: var(--space-5);
-      padding-bottom: var(--space-5);
-      scrollbar-width: none;
       opacity: 0;
       pointer-events: none;
       transition: opacity 300ms var(--ease-out);
-    }
-
-    .find-carousel::-webkit-scrollbar {
-      display: none;
     }
 
     .find-carousel.is-visible {
@@ -72,8 +61,6 @@
     }
 
     .find-carousel .card {
-      scroll-snap-align: start;
-      flex-shrink: 0;
       width: 240px;
     }
   </style>
@@ -101,7 +88,7 @@
 
   <div class="screen-spacer"></div>
 
-  <div class="find-carousel"></div>
+  <div class="carousel find-carousel"></div>
 
   <div class="bottom-actions">
     <a class="btn" data-variant="ghost" data-size="md" data-shape="circle" data-slot="left" href="welcome.html" aria-label="Close">
@@ -120,11 +107,13 @@
     ];
 
     const carousel = document.querySelector('.find-carousel');
+    const primaryBtn = document.querySelector('.bottom-actions [data-slot="primary"]');
+    primaryBtn.classList.add('is-disabled');
 
     landmarks.forEach(landmark => {
       const card = document.createElement('a');
       card.className = 'card';
-      card.href = '#';
+      card.href = 'results.html';
       card.innerHTML = `
         <div class="card-media" style="background: ${landmark.imagePlaceholder}"></div>
         <div class="card-title">${landmark.name}</div>
@@ -135,6 +124,7 @@
     setTimeout(() => {
       document.querySelector('.find-loader').classList.add('is-hidden');
       carousel.classList.add('is-visible');
+      primaryBtn.classList.remove('is-disabled');
     }, 2000);
   </script>
 

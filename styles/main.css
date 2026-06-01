@@ -5,6 +5,7 @@
 @import 'base/elements.css';
 
 @import 'layouts/screen.css';
+@import 'layouts/carousel.css';
 
 @import 'components/button.css';
 @import 'components/card.css';
