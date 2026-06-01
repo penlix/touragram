@@ -5,6 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Touragram — Capture</title>
   <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .capture-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .capture-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-5);
+      max-width: 320px;
+    }
+
+    .capture-fallback-text {
+      font-size: var(--text-sm);
+      color: var(--ink-primary);
+      text-align: center;
+    }
+  </style>
 </head>
 <body class="screen">
 
@@ -18,6 +42,13 @@
     </defs>
   </svg>
 
+  <video class="capture-video" playsinline autoplay muted></video>
+
+  <div class="screen-center capture-fallback" hidden>
+    <p class="capture-fallback-text">Camera access is needed. Enable it in your browser settings and refresh.</p>
+    <button type="button" class="btn capture-fallback-retry" data-variant="primary" data-size="sm">Enable browser camera</button>
+  </div>
+
   <div class="screen-spacer"></div>
 
   <div class="bottom-actions">
@@ -29,8 +60,38 @@
     </a>
   </div>
 
+  <script>
+    const video = document.querySelector('.capture-video');
+    const fallback = document.querySelector('.capture-fallback');
+    const fallbackRetry = document.querySelector('.capture-fallback-retry');
+    const cameraButton = document.querySelector('.bottom-actions [data-slot="primary"]');
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+          audio: false
+        });
+        video.srcObject = stream;
+        video.hidden = false;
+        fallback.hidden = true;
+        cameraButton.classList.remove('is-disabled');
+      } catch (error) {
+        video.hidden = true;
+        fallback.hidden = false;
+        cameraButton.classList.add('is-disabled');
+      }
+    }
+
+    fallbackRetry.addEventListener('click', startCamera);
+
+    startCamera();
+  </script>
+
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
   <script>lucide.createIcons();</script>
+
+  <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
 </html>
