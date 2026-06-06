@@ -145,10 +145,8 @@
         <div class="sheet-photo" style="background: linear-gradient(180deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
       </div>
       <div class="sheet-text">
-        <h1 class="sheet-title">Brandenburg Gate</h1>
-        <p>Built between 1788 and 1791, the Brandenburg Gate was commissioned by Frederick William II of Prussia and designed by Carl Gotthard Langhans, who modeled it on the Propylaea of the Athenian Acropolis. Six Doric columns frame five passages beneath a heavy attic crowned by the Quadriga — a copper statue of the goddess Victoria driving a four-horse chariot.</p>
-        <p>The gate has stood at the center of Berlin's most charged moments. Napoleon's troops marched through it. The Quadriga was stolen, returned, and stolen again across two centuries. After 1961 the structure sat marooned in the no-man's-land between East and West Berlin, visible from both sides but reachable from neither. When the Wall fell in 1989, the gate became the symbolic image of reunification.</p>
-        <p>Today it anchors Pariser Platz, a pedestrian square closed to traffic and surrounded by the U.S. Embassy, the Hotel Adlon, and the Akademie der Künste. The sandstone catches the last of the light at dusk, making it one of the city's most photographed spots. Allow fifteen minutes for the gate itself; longer if you continue east toward the Reichstag or south through Tiergarten.</p>
+        <h1 class="sheet-title"></h1>
+        <div class="sheet-body"></div>
       </div>
     </div>
     <div class="bottom-actions sheet-actions">
@@ -162,12 +160,10 @@
   </div>
 
   <script>
-    const FAKE_RESULTS = true;
-
-    const landmarks = [
-      { name: 'Brandenburg Gate', imagePlaceholder: 'linear-gradient(135deg, #B5A18C, #6B5340)' },
-      { name: 'Reichstag',        imagePlaceholder: 'linear-gradient(135deg, #8A9DA3, #4A5860)' },
-      { name: 'TV Tower',         imagePlaceholder: 'linear-gradient(135deg, #A87C5C, #5A3F2A)' }
+    const cardGradients = [
+      'linear-gradient(135deg, #B5A18C, #6B5340)',
+      'linear-gradient(135deg, #8A9DA3, #4A5860)',
+      'linear-gradient(135deg, #A87C5C, #5A3F2A)'
     ];
 
     const video = document.querySelector('.capture-video');
@@ -184,12 +180,18 @@
     const sheetBackdrop = document.querySelector('.sheet-backdrop');
     const sheetHandleBar = document.querySelector('.sheet-handle-bar');
     const sheetClose = document.querySelector('[data-state-button="sheet-close"]');
+    const sheetTitle = document.querySelector('.sheet-title');
+    const sheetBody = document.querySelector('.sheet-body');
 
     let currentState = 'live';
     let sheetOpen = false;
     let dragStartY = 0;
     let dragCurrentY = 0;
     let isDragging = false;
+    let capturedImage = null;
+    let results = [];
+    let latitude = null;
+    let longitude = null;
 
     async function startCamera() {
       try {
@@ -209,6 +211,16 @@
     }
 
     function captureFrame() {
+      // Draw the current video frame onto an off-screen canvas, downscaled so
+      // the long edge is at most 1568px (Claude vision's effective max, and
+      // well under Vercel's 4.5MB request-body limit at quality 0.8).
+      const canvas = document.createElement('canvas');
+      const maxEdge = 1568;
+      const scale = Math.min(1, maxEdge / Math.max(video.videoWidth, video.videoHeight));
+      canvas.width = video.videoWidth * scale;
+      canvas.height = video.videoHeight * scale;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      capturedImage = canvas.toDataURL('image/jpeg', 0.8);
       video.pause();
     }
 
@@ -263,19 +275,39 @@
       }
     }
 
-    landmarks.forEach(landmark => {
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="card-media" style="background: ${landmark.imagePlaceholder}"></div>
-        <div class="card-title">${landmark.name}</div>
-      `;
-      card.addEventListener('click', () => openSheet(landmark));
-      carousel.appendChild(card);
-    });
+    function renderCards(list) {
+      carousel.innerHTML = '';
+      list.forEach((landmark, i) => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'card';
+
+        const media = document.createElement('div');
+        media.className = 'card-media';
+        media.style.background = cardGradients[i % cardGradients.length];
+
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = landmark.name;
+
+        card.appendChild(media);
+        card.appendChild(title);
+        card.addEventListener('click', () => openSheet(landmark));
+        carousel.appendChild(card);
+      });
+    }
 
     function openSheet(landmark) {
+      // Populate the sheet from the landmark data. textContent (not innerHTML)
+      // so model-generated text can never inject markup.
+      sheetTitle.textContent = landmark.name;
+      sheetBody.innerHTML = '';
+      (landmark.description || '').split('\n\n').forEach(para => {
+        const p = document.createElement('p');
+        p.textContent = para;
+        sheetBody.appendChild(p);
+      });
+
       sheetOpen = true;
       sheet.hidden = false;
       sheetBackdrop.hidden = false;
@@ -329,13 +361,37 @@
       }
     });
 
-    camera.addEventListener('click', () => {
+    camera.addEventListener('click', async () => {
       if (currentState === 'live') {
         captureFrame();
         renderState('loading');
-        setTimeout(() => {
-          renderState(FAKE_RESULTS ? 'results' : 'empty');
-        }, 2000);
+
+        // Abort the request if it runs longer than 30s so the loader can't
+        // spin forever — a timeout falls through to the empty state.
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        try {
+          const res = await fetch('/api/identify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: capturedImage, lat: latitude, lng: longitude }),
+            signal: controller.signal
+          });
+          const data = await res.json();
+          results = (res.ok && Array.isArray(data.landmarks)) ? data.landmarks : [];
+        } catch (error) {
+          results = [];
+        } finally {
+          clearTimeout(timeoutId);
+        }
+
+        if (results.length) {
+          renderCards(results);
+          renderState('results');
+        } else {
+          renderState('empty');
+        }
       } else if (currentState === 'empty') {
         renderState('live');
       }
@@ -345,9 +401,19 @@
       renderState('live');
     });
 
+    function requestLocation() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => { latitude = pos.coords.latitude; longitude = pos.coords.longitude; },
+        () => { /* denied or failed — leave null, location is a hint not a requirement */ },
+        { timeout: 8000 }
+      );
+    }
+
     fallbackRetry.addEventListener('click', startCamera);
 
     startCamera();
+    requestLocation();
   </script>
 
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
