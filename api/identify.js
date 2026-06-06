@@ -12,14 +12,35 @@ const PROMPT = `You are identifying landmarks, buildings, monuments, or notable 
 
 Identify up to 3 candidate landmarks visible in the image, ordered by your confidence (most likely first). Use any provided GPS coordinates as a strong disambiguation hint — if the coordinates clearly indicate a city or neighbourhood, prefer landmarks consistent with that location.
 
-Respond with ONLY a JSON array, no other text. Each element must be an object with exactly these keys:
-  "name": the landmark's common name (string)
-  "description": 2 to 3 short paragraphs about the landmark — its history, significance, and what a visitor should know. Separate paragraphs with a blank line. (string)
-  "wikipediaTitle": the exact English Wikipedia article title for this landmark if you know it (e.g. "Berliner Fernsehturm", "Brandenburg Gate"), or null if you are unsure. This is used to look up photos, so accuracy matters more than guessing. (string or null)
+Report your findings using the report_landmarks tool. If you cannot confidently identify any landmark, report an empty list.`;
 
-If you cannot confidently identify any landmark, respond with an empty array: []
-
-Do not include any text before or after the JSON array.`;
+// The tool's input schema IS the data contract. The API validates the model's
+// tool call against this schema before it reaches us, so there's no text to
+// parse and nothing to parse wrong — no preamble, fences, or trailing prose
+// can exist in a tool_use input.
+const LANDMARKS_TOOL = {
+  name: 'report_landmarks',
+  description: 'Report the landmarks identified in the photo.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      landmarks: {
+        type: 'array',
+        maxItems: 3,
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: "The landmark's common name." },
+            description: { type: 'string', description: '2 to 3 short paragraphs about the landmark — its history, significance, and what a visitor should know. Separate paragraphs with a blank line.' },
+            wikipediaTitle: { type: ['string', 'null'], description: 'The exact English Wikipedia article title for this landmark (e.g. "Berliner Fernsehturm", "Brandenburg Gate"), or null if unsure. Used to look up photos, so accuracy matters more than guessing.' }
+          },
+          required: ['name', 'description', 'wikipediaTitle']
+        }
+      }
+    },
+    required: ['landmarks']
+  }
+};
 
 // Wikimedia is keyless: open content, public API, rate-limited by IP and
 // User-Agent. The User-Agent header is etiquette (Wikimedia may 403 anonymous
@@ -104,6 +125,10 @@ export default async function handler(req, res) {
     const message = await anthropic.messages.create({
       model: MODEL,
       max_tokens: 1024,
+      tools: [LANDMARKS_TOOL],
+      // Force the model to call our tool — it cannot reply with free text,
+      // so its only move is a tool_use block conforming to the schema.
+      tool_choice: { type: 'tool', name: 'report_landmarks' },
       messages: [
         {
           role: 'user',
@@ -115,15 +140,16 @@ export default async function handler(req, res) {
       ]
     });
 
-    // Take Claude's text, strip any markdown code fences, trim, then parse.
-    // The prompt instructs "respond with only a JSON array" — that does the
-    // work now that prefill is gone (Sonnet 4.6 doesn't support prefill).
-    let text = message.content[0].text.trim();
-    text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-    const landmarks = JSON.parse(text);
+    // The tool_use block's input is already a parsed object (the SDK
+    // deserializes it). No JSON.parse, no fence-stripping.
+    const toolUse = message.content.find(block => block.type === 'tool_use');
+    if (!toolUse) {
+      throw new Error('Model did not return a tool_use block');
+    }
+    const landmarks = toolUse.input.landmarks;
 
     if (!Array.isArray(landmarks)) {
-      throw new Error('Claude response was not a JSON array');
+      throw new Error('Tool input did not contain a landmarks array');
     }
 
     // For each landmark with a known Wikipedia title, look up photos. Runs in
