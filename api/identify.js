@@ -31,6 +31,7 @@ const WIKI_HEADERS = { 'User-Agent': 'Touragram/1.0 (learning project; landmark 
 async function fetchLeadImage(title) {
   const url = `${WIKI_API}?action=query&format=json&prop=pageimages&piprop=thumbnail&pithumbsize=400&titles=${encodeURIComponent(title)}`;
   const res = await fetch(url, { headers: WIKI_HEADERS });
+  if (!res.ok) console.log(`Wikimedia pageimages ${res.status} for "${title}"`);
   const data = await res.json();
   const pages = data.query?.pages || {};
   const page = Object.values(pages)[0];
@@ -41,6 +42,7 @@ async function fetchLeadImage(title) {
 async function fetchGalleryImages(title) {
   const url = `${WIKI_API}?action=query&format=json&generator=images&gimlimit=20&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=400&titles=${encodeURIComponent(title)}`;
   const res = await fetch(url, { headers: WIKI_HEADERS });
+  if (!res.ok) console.log(`Wikimedia generator=images ${res.status} for "${title}"`);
   const data = await res.json();
   const pages = data.query?.pages || {};
   return Object.values(pages)
