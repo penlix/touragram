@@ -15,10 +15,66 @@ Identify up to 3 candidate landmarks visible in the image, ordered by your confi
 Respond with ONLY a JSON array, no other text. Each element must be an object with exactly these keys:
   "name": the landmark's common name (string)
   "description": 2 to 3 short paragraphs about the landmark — its history, significance, and what a visitor should know. Separate paragraphs with a blank line. (string)
+  "wikipediaTitle": the exact English Wikipedia article title for this landmark if you know it (e.g. "Berliner Fernsehturm", "Brandenburg Gate"), or null if you are unsure. This is used to look up photos, so accuracy matters more than guessing. (string or null)
 
 If you cannot confidently identify any landmark, respond with an empty array: []
 
 Do not include any text before or after the JSON array.`;
+
+// Wikimedia is keyless: open content, public API, rate-limited by IP and
+// User-Agent. The User-Agent header is etiquette (Wikimedia may 403 anonymous
+// scripts), not authentication.
+const WIKI_API = 'https://en.wikipedia.org/w/api.php';
+const WIKI_HEADERS = { 'User-Agent': 'Touragram/1.0 (learning project; landmark identifier)' };
+
+// The article's primary/infobox image — the canonical representative photo.
+async function fetchLeadImage(title) {
+  const url = `${WIKI_API}?action=query&format=json&prop=pageimages&piprop=thumbnail&pithumbsize=400&titles=${encodeURIComponent(title)}`;
+  const res = await fetch(url, { headers: WIKI_HEADERS });
+  const data = await res.json();
+  const pages = data.query?.pages || {};
+  const page = Object.values(pages)[0];
+  return page?.thumbnail?.source || null;
+}
+
+// All images on the article, filtered down to real photographs.
+async function fetchGalleryImages(title) {
+  const url = `${WIKI_API}?action=query&format=json&generator=images&gimlimit=20&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=400&titles=${encodeURIComponent(title)}`;
+  const res = await fetch(url, { headers: WIKI_HEADERS });
+  const data = await res.json();
+  const pages = data.query?.pages || {};
+  return Object.values(pages)
+    .map(p => p.imageinfo?.[0])
+    .filter(Boolean)
+    // Keep JPEG/PNG only (drops SVG icons/logos/flags/maps), require a
+    // reasonable size (drops small chrome), and block known chrome filenames.
+    .filter(info =>
+      (info.mime === 'image/jpeg' || info.mime === 'image/png') &&
+      info.width >= 400 &&
+      !/commons-logo|wikimedia|wikidata|edit_icon|oojs|ambox|wiki_letter|magnify|symbol|flag_of/i.test(info.url)
+    )
+    .map(info => info.thumburl)
+    .filter(Boolean);
+}
+
+// Combine lead + gallery, dedupe, cap at 6. Never throws — any failure for
+// one landmark just yields an empty list, so it can't sink the others.
+async function fetchPhotos(title) {
+  try {
+    const [lead, gallery] = await Promise.all([
+      fetchLeadImage(title).catch(() => null),
+      fetchGalleryImages(title).catch(() => [])
+    ]);
+    const urls = [];
+    if (lead) urls.push(lead);
+    for (const u of gallery) {
+      if (!urls.includes(u) && urls.length < 6) urls.push(u);
+    }
+    return urls.slice(0, 6);
+  } catch {
+    return [];
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -68,9 +124,19 @@ export default async function handler(req, res) {
       throw new Error('Claude response was not a JSON array');
     }
 
+    // For each landmark with a known Wikipedia title, look up photos. Runs in
+    // parallel; fetchPhotos never throws, so one failed lookup leaves that
+    // landmark with photos: [] and the rest unaffected.
+    const withPhotos = await Promise.all(
+      landmarks.map(async (lm) => ({
+        ...lm,
+        photos: lm.wikipediaTitle ? await fetchPhotos(lm.wikipediaTitle) : []
+      }))
+    );
+
     // 200 with an array (possibly empty) means a successful identification
     // attempt — empty just means "nothing confident found".
-    return res.status(200).json({ landmarks });
+    return res.status(200).json({ landmarks: withPhotos });
   } catch (error) {
     // Genuine failure (SDK threw, JSON malformed, key missing). Surface a 500
     // so it shows up as a real error in the Vercel logs; the frontend treats

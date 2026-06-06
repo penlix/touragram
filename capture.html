@@ -138,16 +138,7 @@
       <div class="sheet-handle"></div>
     </div>
     <div class="sheet-content">
-      <div class="carousel sheet-gallery">
-        <div class="sheet-photo" style="background: linear-gradient(135deg, var(--color-accent-default), var(--color-neutral-1));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(135deg, var(--color-neutral-2), var(--color-accent-default));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(45deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(135deg, var(--color-accent-default), var(--color-neutral-2));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(180deg, var(--color-neutral-2), var(--color-neutral-1));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(45deg, var(--color-neutral-1), var(--color-accent-default));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(90deg, var(--color-neutral-2), var(--color-accent-default));"></div>
-        <div class="sheet-photo" style="background: linear-gradient(180deg, var(--color-neutral-1), var(--color-neutral-2));"></div>
-      </div>
+      <div class="carousel sheet-gallery"></div>
       <div class="sheet-text">
         <h1 class="sheet-title"></h1>
         <div class="sheet-body"></div>
@@ -164,12 +155,6 @@
   </div>
 
   <script>
-    const cardGradients = [
-      'linear-gradient(135deg, #B5A18C, #6B5340)',
-      'linear-gradient(135deg, #8A9DA3, #4A5860)',
-      'linear-gradient(135deg, #A87C5C, #5A3F2A)'
-    ];
-
     const video = document.querySelector('.capture-video');
     const fallback = document.querySelector('.capture-fallback');
     const fallbackRetry = document.querySelector('.capture-fallback-retry');
@@ -186,6 +171,7 @@
     const sheetClose = document.querySelector('[data-state-button="sheet-close"]');
     const sheetTitle = document.querySelector('.sheet-title');
     const sheetBody = document.querySelector('.sheet-body');
+    const sheetGallery = document.querySelector('.sheet-gallery');
 
     let currentState = 'live';
     let sheetOpen = false;
@@ -289,7 +275,14 @@
 
         const media = document.createElement('div');
         media.className = 'card-media';
-        media.style.background = cardGradients[i % cardGradients.length];
+        // Real thumbnail: the landmark's first Wikimedia photo if it has one,
+        // otherwise the frame the user just captured (already in memory).
+        const thumb = (landmark.photos && landmark.photos.length)
+          ? landmark.photos[0]
+          : capturedImage;
+        media.style.backgroundImage = `url("${thumb}")`;
+        media.style.backgroundSize = 'cover';
+        media.style.backgroundPosition = 'center';
 
         const title = document.createElement('div');
         title.className = 'card-title';
@@ -312,6 +305,26 @@
         p.textContent = para;
         sheetBody.appendChild(p);
       });
+
+      // Gallery: real Wikimedia photos if any, otherwise hide it entirely
+      // (no gradient placeholders, no empty container, no gap).
+      sheetGallery.innerHTML = '';
+      const photos = landmark.photos || [];
+      if (photos.length) {
+        sheetGallery.hidden = false;
+        photos.forEach(src => {
+          const img = document.createElement('img');
+          img.className = 'sheet-photo';
+          img.loading = 'lazy';
+          img.alt = landmark.name;
+          img.src = src;
+          // A broken URL removes just that one image, no broken-image icon.
+          img.addEventListener('error', () => img.remove());
+          sheetGallery.appendChild(img);
+        });
+      } else {
+        sheetGallery.hidden = true;
+      }
 
       sheetOpen = true;
       sheet.hidden = false;
