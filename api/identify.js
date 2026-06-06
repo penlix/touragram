@@ -53,16 +53,16 @@ export default async function handler(req, res) {
             { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
             { type: 'text', text: PROMPT + '\n\n' + locationHint }
           ]
-        },
-        // Prefill: put an opening bracket in Claude's mouth so it continues
-        // straight into the JSON array with no prose preamble.
-        { role: 'assistant', content: '[' }
+        }
       ]
     });
 
-    // Glue the prefilled '[' back on, then parse.
-    const raw = '[' + message.content[0].text;
-    const landmarks = JSON.parse(raw);
+    // Take Claude's text, strip any markdown code fences, trim, then parse.
+    // The prompt instructs "respond with only a JSON array" — that does the
+    // work now that prefill is gone (Sonnet 4.6 doesn't support prefill).
+    let text = message.content[0].text.trim();
+    text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    const landmarks = JSON.parse(text);
 
     if (!Array.isArray(landmarks)) {
       throw new Error('Claude response was not a JSON array');
