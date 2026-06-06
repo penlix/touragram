@@ -81,6 +81,10 @@
     .capture-carousel .card {
       width: 240px;
     }
+
+    .capture-carousel.carousel--single .card {
+      width: 100%;
+    }
   </style>
 </head>
 <body class="screen">
@@ -277,6 +281,7 @@
 
     function renderCards(list) {
       carousel.innerHTML = '';
+      carousel.classList.toggle('carousel--single', list.length === 1);
       list.forEach((landmark, i) => {
         const card = document.createElement('button');
         card.type = 'button';
