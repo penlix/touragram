@@ -1,0 +1,6 @@
+# Crawling is allowed on purpose: each page carries a
+# <meta name="robots" content="noindex"> tag, and a crawler has to be able to
+# fetch the page to see it. Allowing the crawl is what actually keeps these
+# pages out of search results.
+User-agent: *
+Allow: /

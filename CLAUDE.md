@@ -108,11 +108,15 @@ assembled by `styles/main.css`: `tokens/`, `base/`, `layouts/`, `components/`):
 
 ## Page conventions
 
-When creating a new HTML page in this project, include these site-wide elements
-at the bottom of `<body>`:
+When creating a new HTML page in this project:
 
-1. The Vercel Analytics script: `<script defer src="/_vercel/insights/script.js"></script>`
-2. Any other site-wide scripts added in the future.
+- In `<head>`, include `<meta name="robots" content="noindex">`. Every page
+  carries it so the site stays out of search results (paired with a permissive
+  `robots.txt` that allows crawling so the tag is actually seen). A new page
+  without it would silently become indexable.
+- At the bottom of `<body>`, include these site-wide scripts:
+  1. The Vercel Analytics script: `<script defer src="/_vercel/insights/script.js"></script>`
+  2. Any other site-wide scripts added in the future.
 
 This is the current solution for shared snippets in a plain-HTML-no-build-step
 project. As the project grows, we may migrate to a templating tool to handle
