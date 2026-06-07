@@ -3,9 +3,12 @@
 Point your phone at a landmark and it tells you what you're looking at, with a
 short history and real photos of the place.
 
-| <img src="assets/screenshots/screenshot-home.png" alt="Welcome screen" width="200"> | <img src="assets/screenshots/screenshot-camera.png" alt="Live camera view" width="200"> | <img src="assets/screenshots/screenshot-results.png" alt="Identified result" width="200"> | <img src="assets/screenshots/screenshot-details.png" alt="Landmark detail sheet" width="200"> |
-|:--:|:--:|:--:|:--:|
-| <sub>Welcome</sub> | <sub>Camera</sub> | <sub>Result</sub> | <sub>Detail</sub> |
+<p align="center">
+  <img src="assets/screenshots/screenshot-home.png" alt="Welcome screen" width="23%">
+  <img src="assets/screenshots/screenshot-camera.png" alt="Live camera view" width="23%">
+  <img src="assets/screenshots/screenshot-results.png" alt="Identified result" width="23%">
+  <img src="assets/screenshots/screenshot-details.png" alt="Landmark detail sheet" width="23%">
+</p>
 
 ## What it does
 
