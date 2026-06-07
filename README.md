@@ -30,7 +30,10 @@ photographs of each one from Wikipedia to build the gallery.
 A personal learning project, built from fundamentals on purpose: plain HTML,
 CSS, and JavaScript, with no frameworks and no build step. The only moving part
 beyond that is a single Vercel serverless function that handles the AI
-identification
-(so the API key stays server-side) and the Wikipedia photo lookup. The point
-was to understand how the pieces actually fit together before reaching for
-tools that hide them.
+identification (so the API key stays server-side) and the Wikipedia photo
+lookup. The point was to understand how the pieces actually fit together before
+reaching for tools that hide them.
+
+The interface is built on a small custom design system (dark theme,
+liquid-glass buttons, a handful of tokens and components), written up in
+[docs/design-system.md](docs/design-system.md).

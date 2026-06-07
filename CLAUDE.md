@@ -20,7 +20,9 @@ Frontend pages (each a standalone HTML file at the project root):
   machine: live → loading → results (a carousel of landmark cards) or empty
   ("No landmarks found"). Tapping a card opens a bottom sheet with the
   landmark's photos, name, and description.
-- `demo.html` — design-system reference (tokens, type, buttons).
+- `styleguide.html` — internal design-system reference (tokens, type,
+  buttons). Working reference only; not linked publicly. The written
+  design-system documentation is `docs/design-system.md`.
 - `prototype.html` — early visual reference, not production.
 
 Styles live in `styles/`, assembled by `styles/main.css`:
