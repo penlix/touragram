@@ -7,120 +7,86 @@ screen. This documents the real decisions behind it.
 
 ## Direction: dark only
 
-The app is dark-themed, and only dark-themed. There is no light or paper
-variant, by choice. Touragram is a camera app: the screens sit over a live
-camera feed or photos, and a dark, near-black surface keeps the focus on the
-imagery and the glass UI floating on top. A light theme would fight the camera
-viewfinder and the glass treatment, so it was never built. New screens are
-expected to stay dark.
+Touragram is a camera app: the UI floats over a live viewfinder and photos, and
+a near-black surface keeps the focus on the imagery. A light theme would fight
+that, so there isn't one. Dark screens also draw less battery on phone OLED
+displays, which matters when you're touring a city all day.
 
 ## Tokens: two tiers
 
-All design values live in CSS custom properties, split into two tiers:
+Design values live in CSS custom properties in two tiers: **primitives**
+(`styles/tokens/primitives.css`, the raw colour/space/type/radius/motion values)
+and **semantic** roles (`styles/tokens/semantic.css`, like `--surface-base`,
+`--ink-primary`, `--accent-default`) that map onto them. Components use the
+semantic roles, so changing a primitive updates every component that references
+it.
 
-- **Primitives** (`styles/tokens/primitives.css`) hold the raw values: the
-  colour ramp, the spacing scale, the type scale, radii, motion. These are the
-  vocabulary, not used directly in components.
-- **Semantic** (`styles/tokens/semantic.css`) holds named roles that map onto
-  primitives: `--surface-base`, `--ink-primary`, `--accent-default`, and so on.
-  Components reference these.
+## Colour
 
-The point of the split: a component asks for `--ink-primary`, not for a
-specific hex. If the palette changes, the primitive moves and every component
-follows. The colour direction of the app has already been re-pitched once this
-way (an earlier muted palette swapped wholesale for the current one) by editing
-primitives alone.
+| | Token | Hex | Role |
+| --- | --- | --- | --- |
+| ![](../assets/swatches/neutral-0.png) | `--color-neutral-0` | `#10141C` | page background |
+| ![](../assets/swatches/neutral-1.png) | `--color-neutral-1` | `#465775` | raised surface |
+| ![](../assets/swatches/neutral-2.png) | `--color-neutral-2` | `#5B6C5D` | borders |
+| ![](../assets/swatches/neutral-3.png) | `--color-neutral-3` | `#B5B6C2` | secondary ink |
+| ![](../assets/swatches/neutral-4.png) | `--color-neutral-4` | `#E8E4DC` | primary ink (cream) |
+| ![](../assets/swatches/accent-default.png) | `--color-accent-default` | `#EF6F6C` | accent (coral) |
+| ![](../assets/swatches/accent-hover.png) | `--color-accent-hover` | `#F38986` | accent hover |
+| ![](../assets/swatches/danger.png) | `--color-danger` | `#B83A3A` | danger |
+| ![](../assets/swatches/success-default.png) | `--color-success-default` | `#59C9A5` | success |
+| ![](../assets/swatches/success-hover.png) | `--color-success-hover` | `#56E39F` | success hover |
 
-### Colour
+## Typography
 
-The neutral ramp runs dark to light, cool-tinted:
+One family: a system sans stack (`--font-sans`). Weights are
+regular/medium/semibold/bold; tracking tokens include a tight `-0.04em` for
+large display text.
 
-| Token | Value | Role |
+| Token | rem | px | Usage |
+| --- | --- | --- | --- |
+| `--text-xs` | 0.75 | 12 | fine print |
+| `--text-sm` | 0.875 | 14 | labels, captions |
+| `--text-base` | 1 | 16 | body |
+| `--text-md` | 1.125 | 18 | emphasised body |
+| `--text-lg` | 1.25 | 20 | small headings |
+| `--text-xl` | 1.5 | 24 | headings |
+| `--text-2xl` | 1.875 | 30 | section titles |
+| `--text-3xl` | 2.25 | 36 | large titles |
+| `--text-4xl` | 3 | 48 | display |
+| `--text-5xl` | 3.75 | 60 | hero wordmark |
+
+## Space, radius, motion
+
+| Token(s) | Value | For |
 | --- | --- | --- |
-| `--color-neutral-0` | `#10141C` | page background (near-black, blue-cool) |
-| `--color-neutral-1` | `#465775` | raised surface (dusk blue) |
-| `--color-neutral-2` | `#5B6C5D` | borders (granite) |
-| `--color-neutral-3` | `#B5B6C2` | secondary ink |
-| `--color-neutral-4` | `#E8E4DC` | primary ink (warm cream) |
+| `--space-1` to `--space-9` | 0.25rem to 6rem | padding, gaps, rhythm (`--space-5` = 1.5rem is the standard screen margin) |
+| `--radius-sm` to `--radius-lg` | 4px to 12px | corner rounding |
+| `--radius-full` | 9999px | pills and circles |
+| `--duration-fast` / `--duration-base` | 120ms / 200ms | transitions |
+| `--ease-out` | cubic-bezier(0.16, 1, 0.3, 1) | easing curve |
 
-Accent is coral: `--color-accent-default: #EF6F6C`, with a lighter `#F38986`
-for hover. Feedback colours: danger `#B83A3A` (deliberately darkened to
-separate it from the coral accent), success `#59C9A5` with a brighter `#56E39F`
-for hover.
+## Liquid-glass buttons
 
-Semantic mapping: `--surface-base` / `--surface-raised` for backgrounds,
-`--ink-primary` / `--ink-secondary` for text, `--accent-default` /
-`--accent-hover` for the primary action, `--accent-ink` (the cream) for content
-sitting on an accent surface, `--border-default`, and `--feedback-*` for status.
-
-### Typography
-
-One family: a system sans stack (`--font-sans`). The project started with a
-serif display face for the wordmark and dropped it; sans-only is simpler and
-reads cleanly at every size on a phone. A modular size scale runs `--text-xs`
-(0.75rem) through `--text-5xl` (3.75rem); weights are
-regular/medium/semibold/bold; line-heights and letter-spacing (`--tracking-*`,
-including a tight `-0.04em` for large display text) are tokenised too.
-
-### Space, radius, motion
-
-Spacing is a single scale (`--space-1` ... `--space-9`) used for padding, gaps,
-and layout rhythm; `--space-5` (1.5rem) is the standard screen margin. Radii run
-`--radius-sm` to `--radius-full` (the pill/circle). Motion is two durations
-(`--duration-fast`, `--duration-base`) and one easing curve (`--ease-out`).
-
-## The liquid-glass buttons
-
-The signature element. Buttons are translucent glass that refracts whatever is
-behind them (camera feed, photo, gradient), in two variants:
-
-- **primary**: a warm coral-tinted glass, for the main action (the shutter, GO).
-- **ghost**: a near-neutral, more transparent glass, for secondary actions
-  (close, share).
-
-Each button is built in three layers: the element itself holds the content; a
-`::after` layer at the back carries the tint, a backdrop blur, and an **SVG
-displacement filter** (`feTurbulence` + `feDisplacementMap`) that bends the
-backdrop for the liquid refraction; a `::before` layer on top adds a bright rim
-highlight. `overflow: hidden` clips the refraction to the button shape.
-
-iOS Safari renders the SVG displacement filter unreliably, so there's a
-documented fallback: an `@supports (-webkit-touch-callout: none)` block (which
-matches iOS WebKit) drops the displacement and uses a heavier plain
-backdrop-blur glass instead. The effect is richest on Chromium and degrades to
-clean frosted glass on iOS rather than breaking. Press feedback is a subtle
-scale-down plus a brief tint warm-up; there is no hover-lift, since the app is
-touch-first.
+Buttons are three-layer translucent glass that refracts whatever is behind them,
+in two variants: **primary** (warm coral tint, for the main action) and
+**ghost** (near-neutral and more transparent, for secondary actions). On iOS
+Safari, which renders the glass filter unreliably, they degrade to plain
+frosted glass rather than breaking.
 
 ## Components and layouts
 
-Styles are assembled by `styles/main.css` in tiers: `tokens/`, then `base/`
-(reset, element defaults), then `layouts/`, then `components/`.
-
-- **button** (`components/button.css`): the glass treatment above. Sizes
-  sm/md/lg; `data-variant` (primary/ghost); `data-shape="circle"` for round
-  icon/text buttons.
-- **card** (`components/card.css`): a glass card (landmark results, photo
-  thumbnails). Reuses the same glass construction as the button.
-- **sheet** (`components/sheet.css`): the bottom sheet that slides up for
-  landmark detail, with a drag-to-dismiss handle.
-- **screen** (`layouts/screen.css`): the full-viewport screen frame and the
-  **bottom-actions** pattern, a centred primary circular action with secondary
-  actions placed beside it.
-- **carousel** (`layouts/carousel.css`): the horizontal scroll-snapping row
-  used for result cards and the photo gallery.
+| Piece | File | Purpose |
+| --- | --- | --- |
+| button | `components/button.css` | the liquid-glass buttons; sizes sm/md/lg, primary/ghost, circle shape |
+| card | `components/card.css` | glass cards for landmark results and photo thumbnails |
+| sheet | `components/sheet.css` | bottom sheet for landmark detail, drag to dismiss |
+| screen | `layouts/screen.css` | full-viewport frame plus the bottom-actions pattern |
+| carousel | `layouts/carousel.css` | horizontal scroll-snapping row for cards and the gallery |
 
 ## Principles
 
-- **Style through semantic tokens.** Components reference semantic roles, not
-  raw hex or pixel values. Change happens in one place.
-- **Don't invent tokens without justification.** Reach for an existing token
-  first; add a new one only when nothing fits, and record why.
-- **Extract on the rule of three.** A pattern is allowed to live inline until a
-  third use earns it a shared component or layout (this is how the carousel and
-  sheet became their own files).
-- **Touch-first.** Interactions are designed for a phone: press states over
-  hover, generous tap targets, safe-area-aware spacing.
+Built on a few principles kept in the project's internal notes: style through
+semantic tokens, and extract a shared component only on the rule of three.
 
 The live, interactive reference for these tokens and components is the internal
 `styleguide.html` page (not linked publicly).

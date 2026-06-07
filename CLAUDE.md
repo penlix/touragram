@@ -113,6 +113,17 @@ assembled by `styles/main.css`: `tokens/`, `base/`, `layouts/`, `components/`):
   internal working page, not linked publicly; `docs/design-system.md` is the
   written companion.)
 
+Principles (the authoritative copy; the public doc only gestures at these):
+
+- Style components through semantic tokens, not raw hex or pixel values, so a
+  change happens in one place.
+- Don't invent tokens without justification (see above): reach for an existing
+  one first, add a new one only when nothing fits, and say why.
+- Extract a pattern into a shared component or layout on its third use, not
+  before (the rule of three; how the carousel and sheet became their own files).
+- Touch-first: press states over hover, generous tap targets, safe-area-aware
+  spacing.
+
 ## Assets
 
 App icons live in `assets/`, all derived from a single 1024x1024 master
