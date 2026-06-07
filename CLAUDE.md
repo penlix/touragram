@@ -106,6 +106,19 @@ assembled by `styles/main.css`: `tokens/`, `base/`, `layouts/`, `components/`):
   primary circular action with secondary actions beside it (e.g. a ghost close
   to the left, share to the right). Page content sits above it.
 
+## Assets
+
+App icons live in `assets/`, all derived from a single 1024x1024 master
+designed in Figma (`assets/icon-1024.png` — the master, not referenced by the
+web):
+
+- `favicon-16.png`, `favicon-32.png` — the browser-tab favicon.
+- `apple-touch-icon.png` (180x180) — the iOS home-screen icon.
+- `icon-192.png`, `icon-512.png` — exported for a future web app manifest
+  (Android/Chrome install icon), which is NOT wired up yet. They're
+  intentionally present, not dead files; adding the manifest is a deferred,
+  one-step follow-up.
+
 ## Page conventions
 
 When creating a new HTML page in this project:
