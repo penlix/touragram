@@ -1,4 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk';
+import {
+  stripDataUrlPrefix,
+  buildLocationHint,
+  extractLandmarks,
+  extractImageInfos,
+  filterGalleryImages,
+  extractLeadImageUrl,
+  combinePhotos
+} from '../lib/identify-logic.js';
 
 // Model string. Swap to 'claude-opus-4-8' if Sonnet's accuracy disappoints
 // on real landmarks — this is the only line that needs to change.
@@ -54,9 +63,7 @@ async function fetchLeadImage(title) {
   const res = await fetch(url, { headers: WIKI_HEADERS });
   if (!res.ok) console.log(`Wikimedia pageimages ${res.status} for "${title}"`);
   const data = await res.json();
-  const pages = data.query?.pages || {};
-  const page = Object.values(pages)[0];
-  return page?.thumbnail?.source || null;
+  return extractLeadImageUrl(data);
 }
 
 // All images on the article, filtered down to real photographs.
@@ -65,19 +72,7 @@ async function fetchGalleryImages(title) {
   const res = await fetch(url, { headers: WIKI_HEADERS });
   if (!res.ok) console.log(`Wikimedia generator=images ${res.status} for "${title}"`);
   const data = await res.json();
-  const pages = data.query?.pages || {};
-  return Object.values(pages)
-    .map(p => p.imageinfo?.[0])
-    .filter(Boolean)
-    // Keep JPEG/PNG only (drops SVG icons/logos/flags/maps), require a
-    // reasonable size (drops small chrome), and block known chrome filenames.
-    .filter(info =>
-      (info.mime === 'image/jpeg' || info.mime === 'image/png') &&
-      info.width >= 400 &&
-      !/commons-logo|wikimedia|wikidata|edit_icon|oojs|ambox|wiki_letter|magnify|symbol|flag_of/i.test(info.url)
-    )
-    .map(info => info.thumburl)
-    .filter(Boolean);
+  return filterGalleryImages(extractImageInfos(data));
 }
 
 // Combine lead + gallery, dedupe, cap at 6. Never throws — any failure for
@@ -88,12 +83,7 @@ async function fetchPhotos(title) {
       fetchLeadImage(title).catch(() => null),
       fetchGalleryImages(title).catch(() => [])
     ]);
-    const urls = [];
-    if (lead) urls.push(lead);
-    for (const u of gallery) {
-      if (!urls.includes(u) && urls.length < 6) urls.push(u);
-    }
-    return urls.slice(0, 6);
+    return combinePhotos(lead, gallery);
   } catch {
     return [];
   }
@@ -113,11 +103,9 @@ export default async function handler(req, res) {
 
     // The browser sends a data URL ("data:image/jpeg;base64,/9j/...").
     // The API wants only the raw base64 part, so strip the prefix.
-    const base64 = image.replace(/^data:image\/\w+;base64,/, '');
+    const base64 = stripDataUrlPrefix(image);
 
-    const locationHint = (lat != null && lng != null)
-      ? `The photo was taken near latitude ${lat}, longitude ${lng}. Use this as a strong hint.`
-      : `No location data is available.`;
+    const locationHint = buildLocationHint(lat, lng);
 
     // The SDK reads process.env.ANTHROPIC_API_KEY automatically.
     const anthropic = new Anthropic();
@@ -142,15 +130,7 @@ export default async function handler(req, res) {
 
     // The tool_use block's input is already a parsed object (the SDK
     // deserializes it). No JSON.parse, no fence-stripping.
-    const toolUse = message.content.find(block => block.type === 'tool_use');
-    if (!toolUse) {
-      throw new Error('Model did not return a tool_use block');
-    }
-    const landmarks = toolUse.input.landmarks;
-
-    if (!Array.isArray(landmarks)) {
-      throw new Error('Tool input did not contain a landmarks array');
-    }
+    const landmarks = extractLandmarks(message);
 
     // For each landmark with a known Wikipedia title, look up photos. Runs in
     // parallel; fetchPhotos never throws, so one failed lookup leaves that
