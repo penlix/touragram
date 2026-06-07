@@ -107,6 +107,11 @@ assembled by `styles/main.css`: `tokens/`, `base/`, `layouts/`, `components/`):
 - Screens use the bottom-actions pattern (`layouts/screen.css`): a centered
   primary circular action with secondary actions beside it (e.g. a ghost close
   to the left, share to the right). Page content sits above it.
+- `styleguide.html` is the living reference for the design system. When you add
+  a new component or token, add it to `styleguide.html` in the same change, so
+  the reference stays current and doesn't go stale as the app grows. (It's an
+  internal working page, not linked publicly; `docs/design-system.md` is the
+  written companion.)
 
 ## Assets
 
