@@ -4,9 +4,10 @@ Point your phone at a landmark and it tells you what you're looking at, with a
 short history and real photos of the place.
 
 <p align="center">
-  <img src="assets/screenshots/screenshot-home.png" alt="Home screen, point and shoot" width="30%">
-  <img src="assets/screenshots/screenshot-results.png" alt="Identified result" width="30%">
-  <img src="assets/screenshots/screenshot-details.png" alt="Landmark detail sheet" width="30%">
+  <img src="assets/screenshots/screenshot-home.png" alt="Welcome screen" width="23%">
+  <img src="assets/screenshots/screenshot-camera.png" alt="Live camera view" width="23%">
+  <img src="assets/screenshots/screenshot-results.png" alt="Identified result" width="23%">
+  <img src="assets/screenshots/screenshot-details.png" alt="Landmark detail sheet" width="23%">
 </p>
 
 ## What it does
