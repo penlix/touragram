@@ -5,6 +5,7 @@ import {
   extractLandmarks,
   extractImageInfos,
   filterGalleryImages,
+  classifyPhoto,
   extractLeadImageUrl,
   combinePhotos
 } from '../lib/identify-logic.js';
@@ -72,7 +73,25 @@ async function fetchGalleryImages(title) {
   const res = await fetch(url, { headers: WIKI_HEADERS });
   if (!res.ok) console.log(`Wikimedia generator=images ${res.status} for "${title}"`);
   const data = await res.json();
-  return filterGalleryImages(extractImageInfos(data));
+  const infos = extractImageInfos(data);
+  const kept = filterGalleryImages(infos);
+
+  // Diagnostics: where are gallery images being lost? Tally the drop reason
+  // for each image and show a few dropped samples (mime, width, url).
+  const rawPages = Object.keys(data.query?.pages || {}).length;
+  const reasons = {};
+  const samples = [];
+  for (const info of infos) {
+    const reason = classifyPhoto(info);
+    reasons[reason] = (reasons[reason] || 0) + 1;
+    if (reason !== 'ok' && samples.length < 3) {
+      samples.push(`${reason}: ${info.mime} ${info.width}w ${info.url}`);
+    }
+  }
+  console.log(`[photos] "${title}" rawPages=${rawPages} infos=${infos.length} kept=${kept.length} reasons=${JSON.stringify(reasons)}`);
+  if (samples.length) console.log(`[photos] "${title}" dropped: ${samples.join(' | ')}`);
+
+  return kept;
 }
 
 // Combine lead + gallery, dedupe, cap at 6. Never throws — any failure for
