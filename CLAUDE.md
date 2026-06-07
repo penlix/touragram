@@ -114,6 +114,12 @@ When creating a new HTML page in this project:
   carries it so the site stays out of search results (paired with a permissive
   `robots.txt` that allows crawling so the tag is actually seen). A new page
   without it would silently become indexable.
+- In `<head>`, include the icon link tags (favicon + apple-touch-icon):
+  ```
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  ```
 - At the bottom of `<body>`, include these site-wide scripts:
   1. The Vercel Analytics script: `<script defer src="/_vercel/insights/script.js"></script>`
   2. Any other site-wide scripts added in the future.
